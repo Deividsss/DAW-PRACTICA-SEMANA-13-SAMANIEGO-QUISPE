@@ -1,0 +1,72 @@
+{% load static %}<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DeiSam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'deisam/style.css' %}">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <h1 class="mark">DeiSam</h1>
+    <p class="tag">Papelería suave para días largos.</p>
+
+    <form id="filtros" class="filtros" autocomplete="off">
+      <label>Buscar
+        <input type="search" id="q" placeholder="washi, cuaderno…">
+      </label>
+      <label>Categoría
+        <select id="categoria"><option value="">Todas</option></select>
+      </label>
+      <label>Ordenar por
+        <select id="ordering">
+          <option value="-created">Más nuevos</option>
+          <option value="precio">Precio: menor a mayor</option>
+          <option value="-precio">Precio: mayor a menor</option>
+          <option value="nombre">Nombre</option>
+        </select>
+      </label>
+      <label class="check"><input type="checkbox" id="soloActivos" checked> Solo productos activos</label>
+    </form>
+
+    <details class="nuevo" id="nuevo">
+      <summary>Agregar producto</summary>
+      <form id="formNuevo">
+        <input name="nombre" placeholder="Nombre" required>
+        <input name="precio" type="number" step="0.01" placeholder="Precio (S/)" required>
+        <input name="stock" type="number" min="0" placeholder="Stock" required>
+        <select name="categoria" id="catNuevo" required></select>
+        <button type="submit">Guardar producto</button>
+        <p class="msg" id="msgNuevo" role="status"></p>
+      </form>
+    </details>
+
+    <nav class="enlaces">
+      <a href="/api/">API</a>
+      <a href="/api/docs/">Swagger</a>
+      <a href="/api/redoc/">Redoc</a>
+      {% if user.is_authenticated %}
+        <form method="post" action="{% url 'rest_framework:logout' %}" class="inline">{% csrf_token %}<button>Salir ({{ user.username }})</button></form>
+      {% else %}
+        <a href="/api-auth/login/?next=/">Iniciar sesión</a>
+      {% endif %}
+    </nav>
+  </aside>
+
+  <main class="main">
+    <p class="resumen" id="resumen" aria-live="polite">Cargando…</p>
+    <section id="grid" class="grid"></section>
+    <nav class="pager" id="pager" aria-label="Paginación">
+      <button id="prev">Anterior</button>
+      <span id="pagina"></span>
+      <button id="next">Siguiente</button>
+    </nav>
+  </main>
+</div>
+<script src="{% static 'deisam/app.js' %}"></script>
+</body>
+</html>
